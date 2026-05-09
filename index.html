@@ -7,94 +7,13 @@
 
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <style>
-/* ===== EXISTING ASSISTANT SECTION ===== */
-#assistant {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 80px 20px;
-}
-#assistant .content-limit {
-    width: 100%;
-    max-width: 800px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 24px;
-    padding: 30px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
-    backdrop-filter: blur(12px);
-}
-#assistant .section-title {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #191a17;
-    font-size: 28px;
-    letter-spacing: 2px;
-}
-.chat-box {
-    height: 350px;
-    overflow-y: auto;
-    background: #085e59;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 18px;
-    padding: 18px;
-    margin-bottom: 20px;
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
-}
-.user {
-    text-align: right;
-    color: white;
-    margin: 10px 0;
-    background: rgba(255,255,255,0.08);
-    padding: 12px 16px;
-    border-radius: 16px;
-    display: inline-block;
-    max-width: 75%;
-    float: right;
-    clear: both;
-}
-.bot {
-    text-align: left;
-    color: #a69e08;
-    margin: 10px 0;
-    background: rgba(212,175,55,0.08);
-    padding: 12px 16px;
-    border-radius: 16px;
-    display: inline-block;
-    max-width: 75%;
-    float: left;
-    clear: both;
-}
-.chat-input {
-    width: 75%;
-    padding: 14px 18px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: #111;
-    color: white;
-    outline: none;
-    font-size: 15px;
-}
-.chat-btn {
-    padding: 14px 22px;
-    margin-left: 10px;
-    border-radius: 14px;
-    border: none;
-    background: linear-gradient(135deg, #D4AF37, #b8962e);
-    color: black;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-.chat-btn:hover { transform: translateY(-2px); }
-section:not(#assistant) .section-title {
+section .section-title {
     position: relative;
     display: inline-block;
     padding-bottom: 5px;
 }
-section:not(#assistant) .section-title::after {
+section .section-title::after {
     content: '';
     position: absolute;
     left: 0; bottom: 0;
@@ -116,89 +35,88 @@ section:not(#assistant) .section-title::after {
     font-family: 'Poppins', sans-serif;
 }
 
-/* Toggle Button */
 #floatToggle {
-    width: 62px;
-    height: 62px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0d0d0d 100%);
-    box-shadow: 0 0 0 2px #D4AF37, 0 8px 32px rgba(212,175,55,0.35), 0 2px 8px rgba(0,0,0,0.6);
+    background: linear-gradient(145deg, #1c1500, #0a0a0a);
+    box-shadow:
+        0 0 0 2.5px #D4AF37,
+        0 0 22px rgba(212,175,55,0.45),
+        0 8px 32px rgba(0,0,0,0.75);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
     position: relative;
-    overflow: hidden;
-}
-#floatToggle::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, rgba(212,175,55,0.15), transparent 65%);
+    overflow: visible;
 }
 #floatToggle:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 0 2px #D4AF37, 0 12px 40px rgba(212,175,55,0.5), 0 2px 8px rgba(0,0,0,0.6);
+    transform: scale(1.1);
+    box-shadow:
+        0 0 0 2.5px #D4AF37,
+        0 0 32px rgba(212,175,55,0.65),
+        0 12px 40px rgba(0,0,0,0.85);
 }
 #floatToggle svg {
-    width: 28px;
-    height: 28px;
-    transition: opacity 0.2s, transform 0.3s;
+    width: 28px; height: 28px;
+    transition: opacity 0.25s, transform 0.3s;
+    position: absolute;
 }
-#floatToggle .icon-chat { opacity: 1; position: absolute; }
-#floatToggle .icon-close { opacity: 0; position: absolute; transform: rotate(-90deg); }
-#floatToggle.open .icon-chat { opacity: 0; transform: rotate(90deg); }
-#floatToggle.open .icon-close { opacity: 1; transform: rotate(0deg); }
+#floatToggle .icon-chat  { opacity: 1; transform: scale(1) rotate(0deg); }
+#floatToggle .icon-close { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+#floatToggle.open .icon-chat  { opacity: 0; transform: scale(0.5) rotate(90deg); }
+#floatToggle.open .icon-close { opacity: 1; transform: scale(1) rotate(0deg); }
 
-/* Pulse ring */
 #floatToggle::after {
     content: '';
     position: absolute;
-    inset: -4px;
+    inset: -6px;
     border-radius: 50%;
-    border: 2px solid rgba(212,175,55,0.4);
-    animation: pulseRing 2.5s ease-out infinite;
+    border: 2px solid rgba(212,175,55,0.45);
+    animation: pulseRing 2.8s ease-out infinite;
+    pointer-events: none;
 }
 @keyframes pulseRing {
-    0% { transform: scale(1); opacity: 0.7; }
-    70% { transform: scale(1.35); opacity: 0; }
-    100% { transform: scale(1.35); opacity: 0; }
+    0%   { transform: scale(1);    opacity: 0.8; }
+    70%  { transform: scale(1.45); opacity: 0;   }
+    100% { transform: scale(1.45); opacity: 0;   }
 }
 
-/* Online dot */
-.float-online-dot {
+.float-dot {
     position: absolute;
     top: 4px; right: 4px;
-    width: 12px; height: 12px;
+    width: 14px; height: 14px;
     background: #22c55e;
     border-radius: 50%;
-    border: 2px solid #0a0a0a;
-    animation: dotPulse 2s ease-in-out infinite;
+    border: 2.5px solid #0a0a0a;
+    animation: dotBlink 2.5s ease-in-out infinite;
+    z-index: 2;
 }
-@keyframes dotPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+@keyframes dotBlink {
+    0%,100% { opacity: 1; transform: scale(1);    }
+    50%     { opacity: 0.6; transform: scale(0.85); }
 }
 
-/* Chat Window */
 #floatWindow {
-    width: 360px;
-    max-height: 520px;
-    background: #0c0c0c;
-    border: 1px solid rgba(212,175,55,0.3);
-    border-radius: 20px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,175,55,0.1);
+    width: 355px;
+    background: #080808;
+    border: 1px solid rgba(212,175,55,0.22);
+    border-radius: 22px;
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(212,175,55,0.07),
+        inset 0 1px 0 rgba(212,175,55,0.08);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     transform-origin: bottom right;
-    transform: scale(0) translateY(20px);
+    transform: scale(0.85) translateY(30px);
     opacity: 0;
     pointer-events: none;
-    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
 }
 #floatWindow.open {
     transform: scale(1) translateY(0);
@@ -206,136 +124,133 @@ section:not(#assistant) .section-title::after {
     pointer-events: all;
 }
 
-/* Header */
 .float-header {
-    background: linear-gradient(135deg, #111 0%, #1a1600 100%);
-    border-bottom: 1px solid rgba(212,175,55,0.2);
-    padding: 14px 18px;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1c1400 100%);
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+    padding: 15px 18px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 13px;
 }
 .float-avatar {
-    width: 40px; height: 40px;
+    width: 42px; height: 42px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #D4AF37, #7a6010);
+    background: linear-gradient(135deg, #D4AF37 0%, #8a6a00 100%);
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 17px; font-weight: 800;
     color: #0a0a0a;
     flex-shrink: 0;
-    box-shadow: 0 0 12px rgba(212,175,55,0.3);
+    box-shadow: 0 0 18px rgba(212,175,55,0.35);
     font-family: 'Syncopate', sans-serif;
-    letter-spacing: -1px;
 }
-.float-header-info { flex: 1; }
-.float-header-name {
-    font-size: 13px;
-    font-weight: 600;
+.float-hinfo { flex: 1; min-width: 0; }
+.float-hname {
+    font-size: 11px;
+    font-weight: 700;
     color: #D4AF37;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     font-family: 'Syncopate', sans-serif;
-    line-height: 1.2;
+    white-space: nowrap;
 }
-.float-header-status {
+.float-hstatus {
     font-size: 11px;
     color: #22c55e;
     display: flex;
     align-items: center;
     gap: 5px;
-    margin-top: 2px;
+    margin-top: 3px;
 }
-.float-header-status::before {
+.float-hstatus::before {
     content: '';
     width: 6px; height: 6px;
     background: #22c55e;
     border-radius: 50%;
-    display: inline-block;
+    flex-shrink: 0;
 }
-.float-powered {
+.float-hpowered {
     font-size: 9px;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.22);
+    letter-spacing: 1px;
+    margin-top: 2px;
+    text-transform: uppercase;
 }
 
-/* Messages */
-.float-messages {
-    flex: 1;
+.float-msgs {
     overflow-y: auto;
-    padding: 16px;
+    padding: 16px 14px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: #0c0c0c;
+    background: #080808;
+    min-height: 180px;
     max-height: 320px;
 }
-.float-messages::-webkit-scrollbar { width: 3px; }
-.float-messages::-webkit-scrollbar-track { background: transparent; }
-.float-messages::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 2px; }
+.float-msgs::-webkit-scrollbar { width: 3px; }
+.float-msgs::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.2); border-radius: 2px; }
 
 .fmsg {
-    max-width: 82%;
-    padding: 10px 14px;
-    border-radius: 14px;
+    max-width: 84%;
+    padding: 11px 15px;
+    border-radius: 16px;
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.55;
     word-break: break-word;
-    animation: msgIn 0.3s cubic-bezier(.34,1.56,.64,1);
+    animation: msgPop 0.3s cubic-bezier(.34,1.56,.64,1) forwards;
 }
-@keyframes msgIn {
-    from { transform: translateY(8px) scale(0.95); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+@keyframes msgPop {
+    from { transform: translateY(10px) scale(0.93); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
 }
 .fmsg.fbot {
-    background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.06));
-    border: 1px solid rgba(212,175,55,0.2);
-    color: #e8d98a;
+    background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.04));
+    border: 1px solid rgba(212,175,55,0.16);
+    color: #e5d285;
     align-self: flex-start;
     border-bottom-left-radius: 4px;
 }
 .fmsg.fuser {
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.06));
-    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.08);
     color: #fff;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
 }
-.fmsg.ftyping {
-    background: rgba(212,175,55,0.08);
-    border: 1px solid rgba(212,175,55,0.15);
-    color: rgba(212,175,55,0.5);
-    font-style: italic;
+.ftyping-wrap {
     align-self: flex-start;
+    background: rgba(212,175,55,0.06);
+    border: 1px solid rgba(212,175,55,0.13);
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+    padding: 12px 16px;
+    display: flex; gap: 5px; align-items: center;
 }
-.ftyping-dots span {
-    display: inline-block;
-    width: 5px; height: 5px;
+.ftyping-wrap span {
+    width: 6px; height: 6px;
     background: #D4AF37;
     border-radius: 50%;
-    margin: 0 2px;
-    animation: typingBounce 1.2s ease-in-out infinite;
+    animation: tdot 1.3s ease-in-out infinite;
+    opacity: 0.5;
 }
-.ftyping-dots span:nth-child(2) { animation-delay: 0.2s; }
-.ftyping-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typingBounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-6px); opacity: 1; }
+.ftyping-wrap span:nth-child(2) { animation-delay: 0.18s; }
+.ftyping-wrap span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes tdot {
+    0%,60%,100% { transform: translateY(0);   opacity: 0.4; }
+    30%         { transform: translateY(-7px); opacity: 1;   }
 }
 
-/* Input Area */
-.float-input-area {
-    padding: 12px 14px;
-    background: #111;
-    border-top: 1px solid rgba(212,175,55,0.15);
+.float-inputrow {
+    padding: 12px 13px;
+    background: #0f0f0f;
+    border-top: 1px solid rgba(212,175,55,0.1);
     display: flex;
-    gap: 8px;
+    gap: 9px;
     align-items: center;
 }
-.float-input {
+.float-inp {
     flex: 1;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(212,175,55,0.2);
-    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(212,175,55,0.16);
+    border-radius: 11px;
     padding: 10px 14px;
     color: #fff;
     font-size: 13px;
@@ -343,84 +258,82 @@ section:not(#assistant) .section-title::after {
     outline: none;
     transition: border-color 0.2s;
 }
-.float-input:focus { border-color: rgba(212,175,55,0.5); }
-.float-input::placeholder { color: rgba(255,255,255,0.25); }
-.float-send {
-    width: 38px; height: 38px;
-    border-radius: 10px;
+.float-inp:focus { border-color: rgba(212,175,55,0.42); }
+.float-inp::placeholder { color: rgba(255,255,255,0.2); }
+.float-sendbtn {
+    width: 40px; height: 40px;
+    border-radius: 11px;
     border: none;
-    background: linear-gradient(135deg, #D4AF37, #b8962e);
-    color: #0a0a0a;
+    background: linear-gradient(135deg, #D4AF37, #9a7500);
+    color: #000;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: transform 0.2s, box-shadow 0.2s;
     flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 3px 14px rgba(212,175,55,0.3);
 }
-.float-send:hover {
-    transform: scale(1.08);
-    box-shadow: 0 4px 16px rgba(212,175,55,0.4);
+.float-sendbtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 22px rgba(212,175,55,0.55);
 }
-.float-send svg { width: 16px; height: 16px; }
+.float-sendbtn svg { width: 16px; height: 16px; }
 
-/* Mobile responsive */
 @media (max-width: 480px) {
-    #floatWindow { width: calc(100vw - 32px); right: 0; }
-    #floatBot { right: 16px; bottom: 16px; }
+    #floatWindow { width: calc(100vw - 30px); }
+    #floatBot { right: 15px; bottom: 15px; }
 }
-
-/* ===== TOAST NOTIFICATION ===== */
-#toastNotif {
+    
+/* ===== TOAST ===== */
+#toast {
     position: fixed;
-    top: 24px; right: 24px;
-    background: linear-gradient(135deg, #111, #1a1600);
-    border: 1px solid rgba(212,175,55,0.4);
+    top: 22px; right: 22px;
+    background: linear-gradient(135deg, #111, #1c1500);
+    border: 1px solid rgba(212,175,55,0.32);
     border-radius: 14px;
-    padding: 14px 20px;
-    color: #D4AF37;
+    padding: 13px 18px;
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
+    font-size: 12.5px;
     z-index: 999999;
     display: flex;
     align-items: center;
-    gap: 10px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    transform: translateX(120%);
-    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
-    max-width: 300px;
+    gap: 11px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    transform: translateX(130%);
+    transition: transform 0.42s cubic-bezier(.34,1.56,.64,1);
+    max-width: 285px;
 }
-#toastNotif.show { transform: translateX(0); }
-#toastNotif .toast-icon { font-size: 20px; }
-#toastNotif .toast-text { line-height: 1.4; }
-#toastNotif .toast-title { font-weight: 600; color: #fff; margin-bottom: 2px; }
-#toastNotif .toast-sub { color: rgba(212,175,55,0.8); font-size: 11px; }
+#toast.show { transform: translateX(0); }
+#toast .t-icon  { font-size: 20px; flex-shrink: 0; }
+#toast .t-title { font-weight: 600; color: #fff; font-size: 13px; }
+#toast .t-sub   { color: rgba(212,175,55,0.82); font-size: 11px; margin-top: 1px; }
 </style>
 </head>
 <body>
 
-<!-- ===== TOAST NOTIFICATION ===== -->
-<div id="toastNotif">
-    <div class="toast-icon">🏏</div>
-    <div class="toast-text">
-        <div class="toast-title" id="toastTitle">Nir's Assistant</div>
-        <div class="toast-sub" id="toastSub">Online & ready to help</div>
+<!-- TOAST -->
+<div id="toast">
+    <div class="t-icon">🏏</div>
+    <div>
+        <div class="t-title" id="toastTitle">Nir's Assistant</div>
+        <div class="t-sub"   id="toastSub">Online &amp; ready</div>
     </div>
 </div>
 
-<!-- ===== FLOATING CHATBOT ===== -->
+<!-- FLOATING BOT -->
 <div id="floatBot">
     <div id="floatWindow">
         <div class="float-header">
             <div class="float-avatar">N</div>
-            <div class="float-header-info">
-                <div class="float-header-name">NIR'S ASSISTANT</div>
-                <div class="float-header-status">Online — Ready to help</div>
-                <div class="float-powered">Powered by Claude AI</div>
+            <div class="float-hinfo">
+                <div class="float-hname">NIR'S ASSISTANT</div>
+                <div class="float-hstatus">Online — Ready to help</div>
+                <div class="float-hpowered">Powered Mrteachnician</div>
             </div>
         </div>
-        <div class="float-messages" id="floatMessages"></div>
-        <div class="float-input-area">
-            <input type="text" class="float-input" id="floatInput" placeholder="Ask about Nir...">
-            <button class="float-send" id="floatSend">
+        <div class="float-msgs" id="fMsgs"></div>
+        <div class="float-inputrow">
+            <input class="float-inp" id="fInp" placeholder="Ask about Nir..." autocomplete="off">
+            <button class="float-sendbtn" id="fSend">
                 <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -429,15 +342,13 @@ section:not(#assistant) .section-title::after {
     </div>
 
     <button id="floatToggle" title="Chat with Nir's Assistant">
-        <div class="float-online-dot"></div>
-        <!-- Chat Icon -->
-        <svg class="icon-chat" fill="none" stroke="#D4AF37" stroke-width="2" viewBox="0 0 24 24">
+        <div class="float-dot"></div>
+        <svg class="icon-chat" fill="none" stroke="#D4AF37" stroke-width="1.8" viewBox="0 0 24 24">
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="9" cy="10" r="1" fill="#D4AF37" stroke="none"/>
-            <circle cx="12" cy="10" r="1" fill="#D4AF37" stroke="none"/>
-            <circle cx="15" cy="10" r="1" fill="#D4AF37" stroke="none"/>
+            <circle cx="9"  cy="10" r="1.2" fill="#D4AF37" stroke="none"/>
+            <circle cx="12" cy="10" r="1.2" fill="#D4AF37" stroke="none"/>
+            <circle cx="15" cy="10" r="1.2" fill="#D4AF37" stroke="none"/>
         </svg>
-        <!-- Close Icon -->
         <svg class="icon-close" fill="none" stroke="#D4AF37" stroke-width="2.5" viewBox="0 0 24 24">
             <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -524,17 +435,6 @@ section:not(#assistant) .section-title::after {
     </div>
 </section>
 
-<!-- ===== MAIN ASSISTANT SECTION ===== -->
-<section id="assistant">
-    <div class="content-limit">
-        <h2 class="section-title">NIR'S PERSONAL ASSISTANT</h2>
-        <div class="chat-box" id="chatBox"></div>
-        <div style="display:flex; align-items:center;">
-            <input type="text" id="userInput" class="chat-input" placeholder="Talk to Nir's Assistant...">
-            <button class="chat-btn" id="sendBtn">Send</button>
-        </div>
-    </div>
-</section>
 
 <!-- ===== SCRIPTS ===== -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
