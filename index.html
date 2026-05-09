@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nirdeshan Kunwar | Journey</title>
+
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===== EXISTING ASSISTANT SECTION ===== */
+#assistant {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+}
+#assistant .content-limit {
+    width: 100%;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    backdrop-filter: blur(12px);
+}
+#assistant .section-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #191a17;
+    font-size: 28px;
+    letter-spacing: 2px;
+}
+.chat-box {
+    height: 350px;
+    overflow-y: auto;
+    background: #085e59;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+}
+.user {
+    text-align: right;
+    color: white;
+    margin: 10px 0;
+    background: rgba(255,255,255,0.08);
+    padding: 12px 16px;
+    border-radius: 16px;
+    display: inline-block;
+    max-width: 75%;
+    float: right;
+    clear: both;
+}
+.bot {
+    text-align: left;
+    color: #a69e08;
+    margin: 10px 0;
+    background: rgba(212,175,55,0.08);
+    padding: 12px 16px;
+    border-radius: 16px;
+    display: inline-block;
+    max-width: 75%;
+    float: left;
+    clear: both;
+}
+.chat-input {
+    width: 75%;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #111;
+    color: white;
+    outline: none;
+    font-size: 15px;
+}
+.chat-btn {
+    padding: 14px 22px;
+    margin-left: 10px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #D4AF37, #b8962e);
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+.chat-btn:hover { transform: translateY(-2px); }
+section:not(#assistant) .section-title {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+section:not(#assistant) .section-title::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 3px;
+    background-color: gold;
+    border-radius: 2px;
+}
+
+/* ===== FLOATING CHATBOT ===== */
+#floatBot {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Toggle Button */
+#floatToggle {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0d0d0d 100%);
+    box-shadow: 0 0 0 2px #D4AF37, 0 8px 32px rgba(212,175,55,0.35), 0 2px 8px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+#floatToggle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(212,175,55,0.15), transparent 65%);
+}
+#floatToggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 2px #D4AF37, 0 12px 40px rgba(212,175,55,0.5), 0 2px 8px rgba(0,0,0,0.6);
+}
+#floatToggle svg {
+    width: 28px;
+    height: 28px;
+    transition: opacity 0.2s, transform 0.3s;
+}
+#floatToggle .icon-chat { opacity: 1; position: absolute; }
+#floatToggle .icon-close { opacity: 0; position: absolute; transform: rotate(-90deg); }
+#floatToggle.open .icon-chat { opacity: 0; transform: rotate(90deg); }
+#floatToggle.open .icon-close { opacity: 1; transform: rotate(0deg); }
+
+/* Pulse ring */
+#floatToggle::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(212,175,55,0.4);
+    animation: pulseRing 2.5s ease-out infinite;
+}
+@keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.7; }
+    70% { transform: scale(1.35); opacity: 0; }
+    100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* Online dot */
+.float-online-dot {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 12px; height: 12px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid #0a0a0a;
+    animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Chat Window */
+#floatWindow {
+    width: 360px;
+    max-height: 520px;
+    background: #0c0c0c;
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 20px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,175,55,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform-origin: bottom right;
+    transform: scale(0) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+}
+#floatWindow.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Header */
+.float-header {
+    background: linear-gradient(135deg, #111 0%, #1a1600 100%);
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.float-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4AF37, #7a6010);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0a0a0a;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(212,175,55,0.3);
+    font-family: 'Syncopate', sans-serif;
+    letter-spacing: -1px;
+}
+.float-header-info { flex: 1; }
+.float-header-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #D4AF37;
+    letter-spacing: 1px;
+    font-family: 'Syncopate', sans-serif;
+    line-height: 1.2;
+}
+.float-header-status {
+    font-size: 11px;
+    color: #22c55e;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+}
+.float-header-status::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+}
+.float-powered {
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.5px;
+}
+
+/* Messages */
+.float-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #0c0c0c;
+    max-height: 320px;
+}
+.float-messages::-webkit-scrollbar { width: 3px; }
+.float-messages::-webkit-scrollbar-track { background: transparent; }
+.float-messages::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 2px; }
+
+.fmsg {
+    max-width: 82%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    word-break: break-word;
+    animation: msgIn 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes msgIn {
+    from { transform: translateY(8px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.fmsg.fbot {
+    background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.06));
+    border: 1px solid rgba(212,175,55,0.2);
+    color: #e8d98a;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+.fmsg.fuser {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.06));
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+.fmsg.ftyping {
+    background: rgba(212,175,55,0.08);
+    border: 1px solid rgba(212,175,55,0.15);
+    color: rgba(212,175,55,0.5);
+    font-style: italic;
+    align-self: flex-start;
+}
+.ftyping-dots span {
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: #D4AF37;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: typingBounce 1.2s ease-in-out infinite;
+}
+.ftyping-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ftyping-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Input Area */
+.float-input-area {
+    padding: 12px 14px;
+    background: #111;
+    border-top: 1px solid rgba(212,175,55,0.15);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.float-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #fff;
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.float-input:focus { border-color: rgba(212,175,55,0.5); }
+.float-input::placeholder { color: rgba(255,255,255,0.25); }
+.float-send {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #D4AF37, #b8962e);
+    color: #0a0a0a;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex-shrink: 0;
+}
+.float-send:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(212,175,55,0.4);
+}
+.float-send svg { width: 16px; height: 16px; }
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    #floatWindow { width: calc(100vw - 32px); right: 0; }
+    #floatBot { right: 16px; bottom: 16px; }
+}
+
+/* ===== TOAST NOTIFICATION ===== */
+#toastNotif {
+    position: fixed;
+    top: 24px; right: 24px;
+    background: linear-gradient(135deg, #111, #1a1600);
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 14px;
+    padding: 14px 20px;
+    color: #D4AF37;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+    max-width: 300px;
+}
+#toastNotif.show { transform: translateX(0); }
+#toastNotif .toast-icon { font-size: 20px; }
+#toastNotif .toast-text { line-height: 1.4; }
+#toastNotif .toast-title { font-weight: 600; color: #fff; margin-bottom: 2px; }
+#toastNotif .toast-sub { color: rgba(212,175,55,0.8); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<!-- ===== TOAST NOTIFICATION ===== -->
+<div id="toastNotif">
+    <div class="toast-icon">🏏</div>
+    <div class="toast-text">
+        <div class="toast-title" id="toastTitle">Nir's Assistant</div>
+        <div class="toast-sub" id="toastSub">Online & ready to help</div>
+    </div>
+</div>
+
+<!-- ===== FLOATING CHATBOT ===== -->
+<div id="floatBot">
+    <div id="floatWindow">
+        <div class="float-header">
+            <div class="float-avatar">N</div>
+            <div class="float-header-info">
+                <div class="float-header-name">NIR'S ASSISTANT</div>
+                <div class="float-header-status">Online — Ready to help</div>
+                <div class="float-powered">Powered by Claude AI</div>
+            </div>
+        </div>
+        <div class="float-messages" id="floatMessages"></div>
+        <div class="float-input-area">
+            <input type="text" class="float-input" id="floatInput" placeholder="Ask about Nir...">
+            <button class="float-send" id="floatSend">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <button id="floatToggle" title="Chat with Nir's Assistant">
+        <div class="float-online-dot"></div>
+        <!-- Chat Icon -->
+        <svg class="icon-chat" fill="none" stroke="#D4AF37" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="10" r="1" fill="#D4AF37" stroke="none"/>
+            <circle cx="12" cy="10" r="1" fill="#D4AF37" stroke="none"/>
+            <circle cx="15" cy="10" r="1" fill="#D4AF37" stroke="none"/>
+        </svg>
+        <!-- Close Icon -->
+        <svg class="icon-close" fill="none" stroke="#D4AF37" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav class="side-menu">
+    <div class="side-logo">About</div>
+    <div class="menu-items">
+        <a href="#hero">Home</a>
+        <a href="#journey">Journey</a>
+        <a href="#achievements">Progression</a>
+        <a href="#vision">Vision</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#assistant">Talk to Nir</a>
+    </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header id="hero" class="full-section">
+    <div class="content-limit">
+        <div class="photo-box">
+            <img src="IMG_20260107_122423_899.webp" alt="Nirdeshan Kunwar">
+        </div>
+        <h1 class="main-name">NIRDESHAN<br><span>KUNWAR</span></h1>
+        <p class="hero-labels">Digital Creator • Cricketer • CS Student</p>
+    </div>
+</header>
+
+<!-- ===== JOURNEY ===== -->
+<section id="journey" class="full-section">
+    <div class="content-limit">
+        <h2 class="section-title">JOURNEY (BIO)</h2>
+        <div class="paragraph-box">
+            <p>Nirdeshan Kunwar Born in Achham, Nepal. He began his journey with a strong foundation, passing his metric-level studies from <strong>Shree Kinder Garden Academy</strong> in Sanfebagar, Achham. He now resides in Kathmandu with his brother, <strong>Lokendra Kunwar</strong>, where he balances his academic and athletic ambitions with a disciplined lifestyle. Nirdeshan Kunwar is a student of Computer Science at GoldenGate College and a dedicated cricketer, Currently training at Kathmandu Cricket Academy in Kathmandu, Nepal. He is known for his disciplined lifestyle, strong work ethic, and commitment to continuous improvement both in sports and academics.</p>
+            <p>As a young cricketer, Nirdeshan focuses on developing his batting skills, match awareness, and overall fitness while working every day to move closer to his goal of playing cricket at a professional level. His passion for the sport is reflected in his consistent training, competitive mindset, and determination to perform under pressure.</p>
+            <p>He is the son of <strong>Devraj Kunwar and Kaushilla Devi Kunwar</strong>, whom he proudly considers the best parents and a constant source of motivation in his life.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ACHIEVEMENTS ===== -->
+<section id="achievements" class="full-section">
+    <div class="content-limit">
+        <h2 class="section-title">PROGRESSION</h2>
+        <div class="points-box">
+            <ul>
+                <li>Represented District at U16, U19 & 10th National Tournament.</li>
+                <li>Winner of Player of the Tournament at SEE Camp 2082.</li>
+                <li>Awarded Man of the Match in two matches of the same tournament.</li>
+                <li>Scored 80 runs in the opening match and 52 runs in the final.</li>
+                <li>Represent District in PM CUP 2082.</li>
+                <li>Winning captain of Municipality chairperson's cup 2080.</li>
+                <li>Awarded the Best Batsman of Goldengate International College 2082.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ===== VISION ===== -->
+<section id="vision" class="full-section dark-alt">
+    <div class="content-limit">
+        <h2 class="section-title gold-title">MY PHILOSOPHY</h2>
+        <p class="philosophy-quote">"Dream without limits, Work without excuses, Fail with courage, Rise with purpose, Leave a legacy that inspires."</p>
+    </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section id="gallery" class="full-section">
+    <div class="content-limit">
+        <h2 class="section-title">VISUAL GALLERY</h2>
+        <div class="gallery-grid">
+            <div class="img-frame"><img src="IMG_20260508_211815.jpg"></div>
+            <div class="img-frame"><img src="IMG_20250715_154508.jpg"></div>
+            <div class="img-frame"><img src="IMG-20250520-WA0009.jpg"></div>
+            <div class="img-frame"><img src="IMG_20260508_134225.jpg"></div>
+            <div class="img-frame"><img src="IMG_20251211_170350.jpg"></div>
+            <div class="img-frame"><img src="1769431596060.jpg"></div>
+            <div class="img-frame"><img src="IMG_20260107_122423_899.webp"></div>
+            <div class="img-frame"><img src="IMG_20260307_175246.jpg"></div>
+            <div class="img-frame"><img src="1766114093638.jpg"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== MAIN ASSISTANT SECTION ===== -->
+<section id="assistant">
+    <div class="content-limit">
+        <h2 class="section-title">NIR'S PERSONAL ASSISTANT</h2>
+        <div class="chat-box" id="chatBox"></div>
+        <div style="display:flex; align-items:center;">
+            <input type="text" id="userInput" class="chat-input" placeholder="Talk to Nir's Assistant...">
+            <button class="chat-btn" id="sendBtn">Send</button>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SCRIPTS ===== -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+const EMAILJS_PUBLIC_KEY  = "aNDohUpb1KOb8hHnb";   // Your key
+const EMAILJS_SERVICE_ID  = "service_vl56w0b";       // Your service
+const EMAILJS_TEMPLATE_ID = "template_0o5x712";      // Your template
+
+// ============================================================
+//  NIR'S AI BRAIN (System Prompt)
+// ============================================================
+const NIR_BRAIN = `You are the official executive AI assistant of Nirdeshan "Nir" Kunwar.
+
+Your purpose is to professionally represent Nir like a real human executive assistant, career manager, media representative, and personal communication handler.
+
+You are NOT a general AI chatbot.
+
+You ONLY discuss matters directly related to Nir's verified public profile, career, academic journey, cricket development, mindset, philosophy, goals, portfolio, and professional contact.
+
+━━━━━━━━━━━━━━━━━━
+👤 VERIFIED PROFESSIONAL PROFILE
+━━━━━━━━━━━━━━━━━━
+Nirdeshan (Nir) Kunwar is a highly disciplined young cricketer and Computer Science student from Nepal.
+
+Core identity:
+- Full name: Nirdeshan Kunwar
+- Known as: Nir Kunwar
+- Birthplace: Achham, Nepal
+- Current city: Kathmandu, Nepal
+- Current education: Computer Science student at GoldenGate College
+- Cricket academy: Kathmandu Cricket Academy
+- Core cricket strengths: batting discipline, match awareness, pressure handling, fitness, shot selection, growth mindset
+- Professional vision: To become a high-level professional cricketer while building strong academic and leadership excellence.
+
+━━━━━━━━━━━━━━━━━━
+🏏 VERIFIED ACHIEVEMENTS
+━━━━━━━━━━━━━━━━━━
+- District-level representation at U16, U19 & 10th National Tournament
+- PM Cup 2082 representation
+- Player of the Tournament — SEE Camp 2082
+- Man of the Match — two matches in same tournament
+- Scored 80 runs in opening match, 52 in the final
+- Best Batsman — GoldenGate International College 2082
+- Winning captain — Municipality Chairperson's Cup 2080
+- KCA U17 Captain — first KCA captain to reach the final at Budhanilkantha U17 Tournament
+- Runner-up & second highest run scorer at Budhanilkantha U17 Cricket Tournament
+
+━━━━━━━━━━━━━━━━━━
+🧠 RESPONSE DECISION ENGINE
+━━━━━━━━━━━━━━━━━━
+VALID TOPIC: About Nir, education, cricket, achievements, tournaments, character, mindset, philosophy, portfolio, meeting, leadership, college journey, sports vision, personal growth, public ambitions, professional contact.
+
+If valid: Respond clearly, intelligently, and professionally.
+
+━━━━━━━━━━━━━━━━━━
+🚫 STRICT PROTECTION RULE
+━━━━━━━━━━━━━━━━━━
+If user asks about general knowledge, science, history, math, personal secrets, family privacy, inappropriate topics, rumors, gossip, or anything outside Nir's public profile:
+
+Respond EXACTLY: "I'm sorry, but I can't discuss that without Nir's permission. If you'd like to connect with him professionally, I'd be happy to guide you."
+
+━━━━━━━━━━━━━━━━━━
+📩 CONTACT GUIDANCE
+━━━━━━━━━━━━━━━━━━
+For contact: "You can connect with Nir professionally through Instagram at @nirkunwar6. Please introduce yourself clearly and mention the purpose of your message."
+
+For career opportunities (sponsorship, collaboration, cricket opportunity, team selection, invitation, coaching offer, business proposal, etc.): "Thank you for reaching out regarding this professional opportunity for Nir. For important career-related discussions, please kindly send the details to: nirkunwar6@gmail.com"
+
+━━━━━━━━━━━━━━━━━━
+💬 TONE SYSTEM
+━━━━━━━━━━━━━━━━━━
+Always be: executive, premium, warm, respectful, concise, confident, intelligent, human-like.
+Avoid long robotic answers. Stay precise, elegant, premium.
+
+━━━━━━━━━━━━━━━━━━
+🤝 INTRODUCTION RESPONSE RULE
+━━━━━━━━━━━━━━━━━━
+If user introduces their role (coach, friend, recruiter, teacher, club member), first politely acknowledge their role only. Keep the first response short and ask how you may help them. Do NOT give full information immediately.`;
+
+// ============================================================
+//  INIT
+// ============================================================
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
+// ============================================================
+//  TOAST UTILITY
+// ============================================================
+function showToast(title, sub, duration = 4000) {
+    const t = document.getElementById("toastNotif");
+    document.getElementById("toastTitle").textContent = title;
+    document.getElementById("toastSub").textContent = sub;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), duration);
+}
+
+// ============================================================
+//  EMAIL UTILITY
+// ============================================================
+function sendEmail(userMsg, aiMsg) {
+    const params = {
+        user_message: userMsg,
+        ai_response: aiMsg,
+        name: "Portfolio Visitor",
+        email: "visitor@site.com"
+    };
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+        .then(() => console.log("✅ Email sent"))
+        .catch(err => console.warn("⚠️ Email failed:", err));
+}
+
+// ============================================================
+//  VISIT NOTIFICATION (on page load)
+// ============================================================
+window.addEventListener("load", () => {
+    // Send visit email
+    sendEmail(
+        "🔔 PORTFOLIO VISIT ALERT",
+        "Someone just opened your portfolio website: nirkunwar6.github.io\n\nTime: " + new Date().toLocaleString()
+    );
+
+    // Show toast
+    setTimeout(() => showToast("Welcome!", "Nir's Assistant is online 👋"), 1500);
+
+    // Greeting in main section chat
+    const chatBox = document.getElementById("chatBox");
+    if (chatBox) {
+        chatBox.innerHTML += `<div class="bot">Hello there! I am Nir's personal assistant. How may I help you?</div>`;
+    }
+
+    // Greeting in floating chat
+    addFloatMsg("bot", "Hello! I'm Nir's executive assistant. How may I help you today? 🏏");
+});
+
+// ============================================================
+//  CLAUDE API CALL
+// ============================================================
+async function askClaude(userText) {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 1000,
+            system: NIR_BRAIN,
+            messages: [{ role: "user", content: userText }]
+        })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    throw new Error("No response from Claude");
+}
+
+// ============================================================
+//  FLOATING CHATBOT LOGIC
+// ============================================================
+const floatToggle   = document.getElementById("floatToggle");
+const floatWindow   = document.getElementById("floatWindow");
+const floatMessages = document.getElementById("floatMessages");
+const floatInput    = document.getElementById("floatInput");
+const floatSend     = document.getElementById("floatSend");
+
+floatToggle.addEventListener("click", () => {
+    floatToggle.classList.toggle("open");
+    floatWindow.classList.toggle("open");
+});
+
+function addFloatMsg(type, text) {
+    const div = document.createElement("div");
+    div.className = "fmsg f" + type;
+    div.textContent = text;
+    floatMessages.appendChild(div);
+    floatMessages.scrollTop = floatMessages.scrollHeight;
+    return div;
+}
+
+function addFloatTyping() {
+    const div = document.createElement("div");
+    div.className = "fmsg ftyping";
+    div.innerHTML = '<div class="ftyping-dots"><span></span><span></span><span></span></div>';
+    floatMessages.appendChild(div);
+    floatMessages.scrollTop = floatMessages.scrollHeight;
+    return div;
+}
+
+async function floatSendMessage() {
+    const text = floatInput.value.trim();
+    if (!text) return;
+
+    addFloatMsg("user", text);
+    floatInput.value = "";
+
+    const typing = addFloatTyping();
+
+    try {
+        const reply = await askClaude(text);
+        typing.remove();
+        addFloatMsg("bot", reply);
+
+        // Send chat email notification
+        sendEmail("💬 Chat: " + text, reply);
+
+        // Show toast
+        showToast("New Message Sent!", "Chat log emailed to you ✉️", 3000);
+
+    } catch (err) {
+        typing.remove();
+        addFloatMsg("bot", "I apologize, I'm temporarily unavailable. Please try again shortly.");
+        console.error("Claude error:", err);
+    }
+}
+
+floatSend.addEventListener("click", floatSendMessage);
+floatInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") floatSendMessage();
+});
+
+// ============================================================
+//  MAIN SECTION CHAT LOGIC
+// ============================================================
+const chatBox = document.getElementById("chatBox");
+
+async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const userText = input.value.trim();
+    if (!userText) return;
+
+    chatBox.innerHTML += `<div class="user">${userText}</div>`;
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const typingId = "t-" + Date.now();
+    chatBox.innerHTML += `<div class="bot" id="${typingId}" style="opacity:.6;font-style:italic;">
+        <span style="letter-spacing:2px">● ● ●</span>
+    </div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        const aiReply = await askClaude(userText);
+
+        document.getElementById(typingId)?.remove();
+        chatBox.innerHTML += `<div class="bot">${aiReply}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        sendEmail("💬 Chat: " + userText, aiReply);
+        showToast("Message Sent!", "Chat log emailed to nirkunwar6@gmail.com ✉️", 3000);
+
+    } catch (err) {
+        document.getElementById(typingId)?.remove();
+        chatBox.innerHTML += `<div class="bot">I apologize — I'm temporarily unavailable. Please try again shortly.</div>`;
+        console.error("Claude error:", err);
+    }
+}
+
+document.getElementById("userInput").addEventListener("keypress", e => {
+    if (e.key === "Enter") sendMessage();
+});
+document.getElementById("sendBtn").addEventListener("click", sendMessage);
+</script>
+</body>
+</html>
